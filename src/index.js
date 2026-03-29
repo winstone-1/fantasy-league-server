@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes')
 const leagueRoutes = require('./routes/leagueRoutes')
 const playerRoutes = require('./routes/playerRoutes')
 const teamRoutes = require('./routes/teamRoutes')
+const standingsRoutes = require('./routes/standingsRoutes')
 
 
 
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/leagues', leagueRoutes)
 app.use('/api/players', playerRoutes)
 app.use('/api/leagues/:id/teams', teamRoutes)
+app.use('/api/leagues/:id/standings', standingsRoutes)
 
 app.get('/', (req, res) => {
   res.json({ message: 'Fantasy League API is running' })
