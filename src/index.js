@@ -4,6 +4,7 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const authRoutes = require('./routes/authRoutes')
 const leagueRoutes = require('./routes/leagueRoutes')
+const playerRoutes = require('./routes/playerRoutes')
 
 require('dotenv').config()
 
@@ -19,6 +20,7 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use('/api/auth', authRoutes)
 app.use('/api/leagues', leagueRoutes)
+app.use('/api/players', playerRoutes)
 
 app.get('/', (req, res) => {
   res.json({ message: 'Fantasy League API is running' })
