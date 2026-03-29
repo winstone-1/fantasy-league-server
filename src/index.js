@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
@@ -6,7 +8,7 @@ const authRoutes = require('./routes/authRoutes')
 const leagueRoutes = require('./routes/leagueRoutes')
 const playerRoutes = require('./routes/playerRoutes')
 
-require('dotenv').config()
+
 
 const connectDB = require('./config/db')
 
