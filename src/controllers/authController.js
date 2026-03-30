@@ -3,6 +3,8 @@ const User = require('../models/User')
 
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
+
+
 // POST /api/auth/register
 const register = async (req, res) => {
   try {
@@ -56,5 +58,37 @@ const login = async (req, res) => {
 const getMe = async (req, res) => {
   res.json(req.user)
 }
+// POST /api/auth/google
+const googleAuth = async (req, res) => {
+  try {
+    const { email, username, photo } = req.body
+    if (!email) return res.status(400).json({ message: 'Email is required' })
 
-module.exports = { register, login, getMe }
+    let user = await User.findOne({ email })
+    if (!user) {
+      user = await User.create({
+        username: username || email.split('@')[0],
+        email,
+        password: Math.random().toString(36).slice(-10) + '!A1',
+        role: 'member'
+      })
+    }
+
+    res.json({
+      _id:      user._id,
+      username: user.username,
+      email:    user.email,
+      photo:    photo,
+      role:     user.role,
+      token:    generateToken(user._id)
+    })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+
+
+module.exports = { register, login, getMe, googleAuth }
+
+

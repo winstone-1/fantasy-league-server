@@ -15,7 +15,7 @@ const playerSchema = new mongoose.Schema({
   stats:       { type: mongoose.Schema.Types.Mixed, default: {} }
 }, { timestamps: true })
 
-// so the same player isn't saved twice
+
 playerSchema.index({ externalId: 1, sport: 1 }, { unique: true })
 
 module.exports = mongoose.model('Player', playerSchema)
