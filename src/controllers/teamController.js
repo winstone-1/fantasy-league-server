@@ -54,25 +54,19 @@ const getTeam = async (req, res) => {
 // POST /api/leagues/:id/teams/:teamId/players
 const addPlayer = async (req, res) => {
   try {
-    const team = await Team.findById(req.params.teamId)
-    if (!team) return res.status(404).json({ message: 'Team not found' })
+    const { playerId, position } = req.body; // Get position from frontend
+    const team = await Team.findById(req.params.teamId);
 
-    if (!team.owner.equals(req.user._id)) {
-      return res.status(403).json({ message: 'Only the team owner can add players' })
-    }
+    // Remove any player already in that specific slot (to allow overwriting)
+    team.players = team.players.filter(p => p.position !== position);
 
-    const player = await Player.findById(req.body.playerId)
-    if (!player) return res.status(404).json({ message: 'Player not found' })
-
-    const alreadyOnTeam = team.players.some(p => p.equals(req.body.playerId))
-    if (alreadyOnTeam) return res.status(400).json({ message: 'Player already on team' })
-
-    team.players.push(req.body.playerId)
-    await team.save()
-
-    res.json({ message: 'Player added', team: await team.populate('players') })
+    // Add the new player to that slot
+    team.players.push({ player: playerId, position: position });
+    
+    await team.save();
+    res.json({ message: 'Player assigned to slot', team });
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 
