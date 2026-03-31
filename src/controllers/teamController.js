@@ -2,6 +2,7 @@ const Team = require('../models/Team')
 const League = require('../models/League')
 const Player = require('../models/Player')
 
+
 // POST /api/leagues/:id/teams
 const createTeam = async (req, res) => {
   try {
@@ -52,24 +53,59 @@ const getTeam = async (req, res) => {
 }
 
 // POST /api/leagues/:id/teams/:teamId/players
+// controllers/teamController.js
 const addPlayer = async (req, res) => {
   try {
-    const { playerId, position } = req.body; // Get position from frontend
+    const { playerId, position } = req.body; // 'position' is 'GK', 'LW', etc.
     const team = await Team.findById(req.params.teamId);
 
-    // Remove any player already in that specific slot (to allow overwriting)
+    // 1. Remove player currently in this specific slot (if any)
     team.players = team.players.filter(p => p.position !== position);
 
-    // Add the new player to that slot
-    team.players.push({ player: playerId, position: position });
-    
+    // 2. Add the new player assignment
+    team.players.push({ 
+      player: playerId, 
+      position: position 
+    });
+
     await team.save();
-    res.json({ message: 'Player assigned to slot', team });
+    
+    // 3. Return the team with player details populated
+    const updatedTeam = await Team.findById(team._id).populate('players.player');
+    res.json(updatedTeam);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
-
+const updateTeam = async (req, res) => {
+  try {
+    const { players } = req.body; 
+    const team = await Team.findByIdAndUpdate(
+      req.params.teamId, 
+      { players }, 
+      { new: true }
+    ).populate('players.player');
+    
+    res.json(team);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// PUT /api/leagues/:id/teams/:teamId
+const updateTeamRoster = async (req, res) => {
+  try {
+    const { players } = req.body; // Expecting [{ position: 'GK', player: 'ID' }]
+    const team = await Team.findByIdAndUpdate(
+      req.params.teamId,
+      { players },
+      { new: true }
+    ).populate('players.player');
+    
+    res.json(team);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // DELETE /api/leagues/:id/teams/:teamId/players/:playerId
 const removePlayer = async (req, res) => {
   try {
@@ -89,4 +125,4 @@ const removePlayer = async (req, res) => {
   }
 }
 
-module.exports = { createTeam, getTeams, getTeam, addPlayer, removePlayer }
+module.exports = { createTeam, getTeams, getTeam, addPlayer, removePlayer, updateTeam, updateTeamRoster }
