@@ -24,28 +24,29 @@ const allowedOrigins = [
   'https://fantasy-league-client.vercel.app',
 ]
 
+// 1. Move CORS to the very top 
 app.use(cors({
   origin: (origin, callback) => {
-    // allow server-to-server / curl (no origin header)
-    if (!origin) return callback(null, true)
-    if (allowedOrigins.includes(origin)) return callback(null, true)
-    console.warn(`CORS blocked: ${origin}`)
-    callback(new Error(`CORS blocked: ${origin}`))
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
   },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}))
+  credentials: true
+}));
+
+app.options('*', cors()); // Essential for Preflight
+
+// 2. Adjust Helmet to be less restrictive for OAuth
+app.use(helmet({
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }, // Better than 'false'
+  contentSecurityPolicy: false, // Temporary: Disable this to see if the crash stops
+}));
+
+app.use(morgan('dev'));
+app.use(express.json());
 
 // Must come before other middleware so preflight OPTIONS requests are handled
 app.options('*', cors())
 
-// ── Middleware ────────────────────────────────────────────────────────────────
-app.use(helmet({
-  crossOriginOpenerPolicy: false
-}))
-app.use(morgan('dev'))
-app.use(express.json())
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/auth',                  authRoutes)
