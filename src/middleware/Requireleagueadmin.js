@@ -1,12 +1,11 @@
 const League = require('../models/League')
 
 /**
- * Middleware: ensures the authenticated user is the admin/creator of the league.
- * Works with mergeParams:true — reads :id from the parent leagueRoutes param.
+ * Middleware: ensures the authenticated user is the commissioner of the league.
+ * Works with mergeParams:true — reads :id from /api/leagues/:id/matches
  */
 const requireLeagueAdmin = async (req, res, next) => {
   try {
-    // mergeParams gives us :id from /:id/matches in leagueRoutes
     const leagueId = req.params.id
 
     const league = await League.findById(leagueId)
@@ -18,7 +17,7 @@ const requireLeagueAdmin = async (req, res, next) => {
     const userId    = req.user._id?.toString() || req.user.id?.toString()
 
     if (creatorId !== userId) {
-      return res.status(403).json({ message: 'Only the league admin can perform this action' })
+      return res.status(403).json({ message: 'Only the league commissioner can perform this action' })
     }
 
     req.league = league

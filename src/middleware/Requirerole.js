@@ -1,4 +1,8 @@
-
+/**
+ * Middleware: restricts a route to users with specific roles.
+ * Usage: requireRole('admin') or requireRole('admin', 'commissioner')
+ * Must be used AFTER the protect middleware (req.user must be set).
+ */
 const requireRole = (...roles) => (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({ message: 'Not authenticated' })
