@@ -3,33 +3,27 @@ const User = require('../models/User')
 
 const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' })
 
-
+// Consistent user shape returned in every auth response
+const userPayload = (user) => ({
+  _id:       user._id,
+  username:  user.username,
+  email:     user.email,
+  role:      user.role,
+  createdAt: user.createdAt,
+  token:     generateToken(user._id)
+})
 
 // POST /api/auth/register
 const register = async (req, res) => {
   try {
-    console.log('register hit')
     const { username, email, password } = req.body
-    console.log('body:', req.body)
-    
+
     const userExists = await User.findOne({ email })
-    console.log('userExists:', userExists)
-    
     if (userExists) return res.status(400).json({ message: 'User already exists' })
 
-    console.log('creating user...')
     const user = await User.create({ username, email, password })
-    console.log('user created:', user)
-    
-    res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user._id)
-    })
+    res.status(201).json(userPayload(user))
   } catch (error) {
-    console.log('ERROR:', error)
     res.status(500).json({ message: error.message })
   }
 }
@@ -42,13 +36,7 @@ const login = async (req, res) => {
     if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
-    res.json({
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user._id)
-    })
+    res.json(userPayload(user))
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
@@ -56,8 +44,35 @@ const login = async (req, res) => {
 
 // GET /api/auth/me
 const getMe = async (req, res) => {
-  res.json(req.user)
+  // req.user is set by protect middleware — re-fetch to get latest role/data
+  const user = await User.findById(req.user._id).select('-password')
+  if (!user) return res.status(404).json({ message: 'User not found' })
+  res.json(user)
 }
+
+// PUT /api/auth/me — update display name
+const updateMe = async (req, res) => {
+  try {
+    const { username } = req.body
+    if (!username?.trim()) {
+      return res.status(400).json({ message: 'Username cannot be empty' })
+    }
+
+    const taken = await User.findOne({ username: username.trim(), _id: { $ne: req.user._id } })
+    if (taken) return res.status(400).json({ message: 'Username already taken' })
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { username: username.trim() },
+      { new: true, runValidators: true }
+    ).select('-password')
+
+    res.json(user)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
 // POST /api/auth/google
 const googleAuth = async (req, res) => {
   try {
@@ -75,20 +90,12 @@ const googleAuth = async (req, res) => {
     }
 
     res.json({
-      _id:      user._id,
-      username: user.username,
-      email:    user.email,
-      photo:    photo,
-      role:     user.role,
-      token:    generateToken(user._id)
+      ...userPayload(user),
+      photo // photo comes from Firebase, not stored in DB
     })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 }
 
-
-
-module.exports = { register, login, getMe, googleAuth }
-
-
+module.exports = { register, login, getMe, updateMe, googleAuth }
