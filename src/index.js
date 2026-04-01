@@ -41,7 +41,9 @@ app.use(cors({
 app.options('*', cors())
 
 // ── Middleware ────────────────────────────────────────────────────────────────
-app.use(helmet())
+app.use(helmet({
+  crossOriginOpenerPolicy: false
+}))
 app.use(morgan('dev'))
 app.use(express.json())
 
