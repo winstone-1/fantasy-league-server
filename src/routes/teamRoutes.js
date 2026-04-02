@@ -1,16 +1,17 @@
-const express = require('express')
-const router = express.Router({ mergeParams: true })
-const protect = require('../middleware/protect')
-const { createTeam, getTeams, getTeam, addPlayer, removePlayer, updateTeamRoster, updateTeam  } = require('../controllers/teamController')
+import express from 'express';
+import protect from '../middleware/protect.js';
+import { createTeam, getTeams, getTeam, addPlayer, removePlayer, updateTeamRoster, updateTeam } from '../controllers/teamController.js';
 
-router.use(protect)
+const router = express.Router({ mergeParams: true });
 
-router.post('/',                          createTeam)
-router.get('/',                           getTeams)
-router.get('/:teamId',                    getTeam)
-router.post('/:teamId/players',           addPlayer)
-router.delete('/:teamId/players/:playerId', removePlayer)
-router.put('/:teamId',                     updateTeamRoster)
-router.put('/:teamId/update',              updateTeam)
+router.use(protect);
 
-module.exports = router
+router.post('/',                          createTeam);
+router.get('/',                           getTeams);
+router.get('/:teamId',                    getTeam);
+router.post('/:teamId/players',           addPlayer);
+router.delete('/:teamId/players/:playerId', removePlayer);
+router.put('/:teamId',                     updateTeamRoster);
+router.put('/:teamId/update',              updateTeam);
+
+export default router;

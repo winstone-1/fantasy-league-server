@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const leagueSchema = new mongoose.Schema({
   name:         { type: String, required: true, trim: true },
@@ -9,6 +9,6 @@ const leagueSchema = new mongoose.Schema({
   isPrivate:    { type: Boolean, default: false },
   inviteCode:   { type: String, unique: true },
   season:       { type: String, default: '2025' }
-}, { timestamps: true })
+}, { timestamps: true });
 
-module.exports = mongoose.model('League', leagueSchema)
+export default mongoose.model('League', leagueSchema);

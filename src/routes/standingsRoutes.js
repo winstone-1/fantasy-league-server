@@ -1,10 +1,11 @@
-const express = require('express')
-const router = express.Router({ mergeParams: true })
-const protect = require('../middleware/protect')
-const { getStandings } = require('../controllers/standingsController')
+import express from 'express';
+import protect from '../middleware/protect.js';
+import { getStandings } from '../controllers/standingsController.js';
 
-router.use(protect)
+const router = express.Router({ mergeParams: true });
 
-router.get('/', getStandings)
+router.use(protect);
 
-module.exports = router
+router.get('/', getStandings);
+
+export default router;

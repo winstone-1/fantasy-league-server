@@ -1,12 +1,13 @@
-const express = require('express')
-const router = express.Router({ mergeParams: true })
-const protect = require('../middleware/protect')
-const requireLeagueAdmin = require('../middleware/Requireleagueadmin')
-const { createMatch, getLeagueMatches } = require('../controllers/matchController')
+import express from 'express';
+import protect from '../middleware/protect.js';
+import requireLeagueAdmin from '../middleware/Requireleagueadmin.js';
+import { createMatch, getLeagueMatches } from '../controllers/matchController.js';
 
-router.use(protect)
+const router = express.Router({ mergeParams: true });
 
-router.post('/', requireLeagueAdmin, createMatch)
-router.get('/',  getLeagueMatches)
+router.use(protect);
 
-module.exports = router
+router.post('/', requireLeagueAdmin, createMatch);
+router.get('/',  getLeagueMatches);
+
+export default router;

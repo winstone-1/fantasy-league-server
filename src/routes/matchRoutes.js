@@ -1,24 +1,25 @@
-const express = require('express')
-const router = express.Router({ mergeParams: true })
-const protect = require('../middleware/protect')
-const requireLeagueAdmin = require('../middleware/requireLeagueAdmin')
-const {
+import express from 'express';
+import protect from '../middleware/protect.js';
+import requireLeagueAdmin from '../middleware/Requireleagueadmin.js';
+import {
   createMatch,
   getLeagueMatches,
   getLiveMatches,
   getMatch,
   updateScore
-} = require('../controllers/matchController')
+} from '../controllers/matchController.js';
 
-router.use(protect)
+const router = express.Router({ mergeParams: true });
+
+router.use(protect);
 
 // League-scoped routes (mounted at /leagues/:leagueId/matches)
-router.post('/',               requireLeagueAdmin, createMatch)
-router.get('/',                getLeagueMatches)
+router.post('/',               requireLeagueAdmin, createMatch);
+router.get('/',                getLeagueMatches);
 
 // Global / match-specific routes
-router.get('/live',            getLiveMatches)
-router.get('/:matchId',        getMatch)
-router.put('/:matchId/score',  requireLeagueAdmin, updateScore)
+router.get('/live',            getLiveMatches);
+router.get('/:matchId',        getMatch);
+router.put('/:matchId/score',  requireLeagueAdmin, updateScore);
 
-module.exports = router
+export default router;

@@ -1,12 +1,13 @@
-const express = require('express')
-const router = express.Router()
-const protect = require('../middleware/protect')
-const { searchPlayers, getPlayer, getPlayersBySport } = require('../controllers/playerController')
+import express from 'express';
+import protect from '../middleware/protect.js';
+import { searchPlayers, getPlayer, getPlayersBySport } from '../controllers/playerController.js';
 
-router.use(protect)
+const router = express.Router();
 
-router.get('/search',       searchPlayers)
-router.get('/sport/:sport', getPlayersBySport)
-router.get('/:id',          getPlayer)
+router.use(protect);
 
-module.exports = router
+router.get('/search',       searchPlayers);
+router.get('/sport/:sport', getPlayersBySport);
+router.get('/:id',          getPlayer);
+
+export default router;

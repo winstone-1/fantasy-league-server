@@ -1,19 +1,20 @@
-const express = require('express')
-const router = express.Router()
-const protect = require('../middleware/protect')
-const {
+import express from 'express';
+import protect from '../middleware/protect.js';
+import {
   createLeague, getMyLeagues, getLeague,
   updateLeague, deleteLeague, joinLeague, leaveLeague
-} = require('../controllers/leagueController')
+} from '../controllers/leagueController.js';
 
-router.use(protect)
+const router = express.Router();
 
-router.post('/',              createLeague)
-router.get('/',               getMyLeagues)
-router.get('/:id',            getLeague)
-router.put('/:id',            updateLeague)
-router.delete('/:id',         deleteLeague)
-router.post('/:id/join',      joinLeague)
-router.delete('/:id/leave',   leaveLeague)
+router.use(protect);
 
-module.exports = router
+router.post('/',              createLeague);
+router.get('/',               getMyLeagues);
+router.get('/:id',            getLeague);
+router.put('/:id',            updateLeague);
+router.delete('/:id',         deleteLeague);
+router.post('/:id/join',      joinLeague);
+router.delete('/:id/leave',   leaveLeague);
+
+export default router;

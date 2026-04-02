@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const matchSchema = new mongoose.Schema({
   league:     { type: mongoose.Schema.Types.ObjectId, ref: 'League', required: true },
@@ -9,6 +9,6 @@ const matchSchema = new mongoose.Schema({
   status:     { type: String, enum: ['scheduled', 'live', 'completed'], default: 'scheduled' },
   week:       { type: Number, required: true },
   startTime:  { type: Date, required: true }
-}, { timestamps: true })
+}, { timestamps: true });
 
-module.exports = mongoose.model('Match', matchSchema)
+export default mongoose.model('Match', matchSchema);

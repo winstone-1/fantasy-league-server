@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const playerSchema = new mongoose.Schema({
   externalId:  { type: String, required: true },
@@ -13,9 +13,8 @@ const playerSchema = new mongoose.Schema({
   height:      { type: String },
   weight:      { type: String },
   stats:       { type: mongoose.Schema.Types.Mixed, default: {} }
-}, { timestamps: true })
+}, { timestamps: true });
 
+playerSchema.index({ externalId: 1, sport: 1 }, { unique: true });
 
-playerSchema.index({ externalId: 1, sport: 1 }, { unique: true })
-
-module.exports = mongoose.model('Player', playerSchema)
+export default mongoose.model('Player', playerSchema);

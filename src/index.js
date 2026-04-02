@@ -1,19 +1,19 @@
-require('dotenv').config()
+import 'dotenv/config';
 
-const express = require('express')
-const cors = require('cors')
-const helmet = require('helmet')
-const morgan = require('morgan')
-const authRoutes         = require('./routes/authRoutes')
-const leagueRoutes       = require('./routes/leagueRoutes')
-const playerRoutes       = require('./routes/playerRoutes')
-const teamRoutes         = require('./routes/teamRoutes')
-const standingsRoutes    = require('./routes/standingsRoutes')
-const matchRoutes        = require('./routes/matchRoutes')
-const leagueMatchRoutes  = require('./routes/leagueMatchRoutes')
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import authRoutes from './routes/authRoutes.js';
+import leagueRoutes from './routes/leagueRoutes.js';
+import playerRoutes from './routes/playerRoutes.js';
+import teamRoutes from './routes/teamRoutes.js';
+import standingsRoutes from './routes/standingsRoutes.js';
+import matchRoutes from './routes/matchRoutes.js';
+import leagueMatchRoutes from './routes/leagueMatchRoutes.js';
 
-const connectDB = require('./config/db')
-connectDB()
+import connectDB from './config/db.js';
+connectDB();
 
 const app = express()
 
