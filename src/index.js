@@ -19,6 +19,7 @@ const app = express()
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
+  process.env.CLIENT_URL_PROD,
   'http://localhost:5173',
   'http://localhost:3000',
   'https://fantasy-league-client.vercel.app',
