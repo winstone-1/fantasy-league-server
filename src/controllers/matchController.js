@@ -86,25 +86,33 @@ const updateScore = async (req, res) => {
 };
 
 // PATCH /api/matches/:id/status
+// PATCH /api/matches/:id/status
 const updateStatus = async (req, res) => {
   try {
-    const match = await Match.findById(req.params.id).populate('league');
-    if (!match) return res.status(404).json({ message: 'Match not found' });
+    const match = await Match.findById(req.params.id).populate('league')
+    if (!match) return res.status(404).json({ message: 'Match not found' })
 
-    if (!match.league.commissioner.equals(req.user._id)) {
-      return res.status(403).json({ message: 'Only the commissioner can update match status' });
+    // league may not be populated if it was deleted — guard against it
+    if (!match.league) return res.status(404).json({ message: 'League not found' })
+
+    // Some Match docs may store commissioner differently — check both
+    const commissionerId = match.league.commissioner?._id || match.league.commissioner
+    if (!commissionerId) return res.status(403).json({ message: 'No commissioner found' })
+
+    if (commissionerId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only the commissioner can update match status' })
     }
 
-    const { status, minute } = req.body;
-    if (status !== undefined) match.status = status;
-    if (minute !== undefined) match.minute = minute;
-    await match.save();
+    const { status, minute } = req.body
+    if (status !== undefined) match.status = status
+    if (minute !== undefined) match.minute = Number(minute)
+    await match.save()
 
-    res.json(match);
+    res.json(match)
   } catch (error) {
-    console.error('UPDATE STATUS ERROR:', error.message);
-    res.status(500).json({ message: error.message });
+    console.error('UPDATE STATUS ERROR:', error.message)
+    res.status(500).json({ message: error.message })
   }
-};
+}
 
 export { createMatch, getLeagueMatches, getLiveMatches, getMatch, updateScore, updateStatus };
