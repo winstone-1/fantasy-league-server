@@ -87,7 +87,30 @@ const deleteLeague = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// POST /api/leagues/join  (by invite code)
+const joinLeagueByCode = async (req, res) => {
+  try {
+    const { inviteCode } = req.body
+    if (!inviteCode) return res.status(400).json({ message: 'Invite code required' })
 
+    const league = await League.findOne({ inviteCode: inviteCode.toUpperCase() })
+    if (!league) return res.status(404).json({ message: 'League not found' })
+
+    const alreadyMember = league.members.some(m => m.equals(req.user._id))
+    if (alreadyMember) return res.status(400).json({ message: 'Already a member' })
+
+    if (league.members.length >= league.maxTeams)
+      return res.status(400).json({ message: 'League is full' })
+
+    league.members.push(req.user._id)
+    await league.save()
+
+    res.json({ message: 'Joined league successfully', league })
+  } catch (error) {
+    console.error('JOIN BY CODE ERROR:', error.message)
+    res.status(500).json({ message: error.message })
+  }
+}
 // POST /api/leagues/:id/join
 const joinLeague = async (req, res) => {
   try {
@@ -131,4 +154,4 @@ const leaveLeague = async (req, res) => {
   }
 };
 
-export { createLeague, getMyLeagues, getLeague, updateLeague, deleteLeague, joinLeague, leaveLeague };
+export { createLeague, getMyLeagues, getLeague, updateLeague, deleteLeague, joinLeague, leaveLeague, joinLeagueByCode };
