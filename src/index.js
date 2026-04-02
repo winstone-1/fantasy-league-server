@@ -23,6 +23,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
   'https://fantasy-league-client.vercel.app',
+  'https://fantasy-league-server-production.up.railway.app'
 ]
 
 // 1. Move CORS to the very top 
