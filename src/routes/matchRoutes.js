@@ -6,20 +6,22 @@ import {
   getLeagueMatches,
   getLiveMatches,
   getMatch,
-  updateScore
+  updateScore,
+  updateStatus
 } from '../controllers/matchController.js';
 
 const router = express.Router({ mergeParams: true });
 
 router.use(protect);
 
-// League-scoped routes (mounted at /leagues/:leagueId/matches)
-router.post('/',               requireLeagueAdmin, createMatch);
-router.get('/',                getLeagueMatches);
+// League-scoped (mounted at /api/leagues/:id/matches)
+router.post('/',     requireLeagueAdmin, createMatch);
+router.get('/',      getLeagueMatches);
 
-// Global / match-specific routes
-router.get('/live',            getLiveMatches);
-router.get('/:matchId',        getMatch);
-router.put('/:matchId/score',  requireLeagueAdmin, updateScore);
+// Global match routes (mounted at /api/matches)
+router.get('/live',          getLiveMatches);
+router.get('/:id',           getMatch);
+router.put('/:id/score',     updateScore);
+router.patch('/:id/status',  updateStatus);
 
 export default router;
