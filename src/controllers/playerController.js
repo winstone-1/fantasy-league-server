@@ -1,6 +1,7 @@
 import Player from '../models/Player.js';
 import { searchNBAPlayers, searchSoccerPlayers } from '../services/sportsApiService.js';
 
+
 // GET /api/players/search?q=lebron&sport=basketball
 const searchPlayers = async (req, res) => {
   try {
@@ -64,6 +65,8 @@ const getPlayersBySport = async (req, res) => {
 // Body: { name, position, team, sport }
 const createCustomPlayer = async (req, res) => {
   try {
+     console.log('CUSTOM PLAYER BODY:', req.body)  
+    console.log('CUSTOM PLAYER USER:', req.user)
     const { name, position, team, sport } = req.body;
     if (!name || !sport) {
       return res.status(400).json({ message: 'Name and sport are required' });
