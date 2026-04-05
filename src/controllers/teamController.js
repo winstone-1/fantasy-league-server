@@ -31,7 +31,7 @@ const getTeams = async (req, res) => {
   try {
     const teams = await Team.find({ league: req.params.id })
       .populate('owner', 'username email')
-      .populate('players');
+      .populate('players.player');
     res.json(teams);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -43,7 +43,7 @@ const getTeam = async (req, res) => {
   try {
     const team = await Team.findById(req.params.teamId)
       .populate('owner', 'username email')
-      .populate('players');
+      .populate('players.player');
     if (!team) return res.status(404).json({ message: 'Team not found' });
     res.json(team);
   } catch (error) {
