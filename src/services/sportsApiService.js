@@ -37,7 +37,10 @@ const searchSoccerPlayers = async (name) => {
     const res = await fetch(url, { headers: HEADERS });
     const data = await res.json();
     console.log('Soccer API response:', JSON.stringify(data).slice(0, 200));
-    return (data.data || []).map(p => ({
+    console.log('Soccer API first player:', JSON.stringify(data.data?.[0]));
+    return (data.data || [])
+      .filter(p => p.id != null)
+      .map(p => ({
       externalId: String(p.id),
       sport: 'soccer',
       name: p.display_name || `${p.first_name} ${p.last_name}`,

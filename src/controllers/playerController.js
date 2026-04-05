@@ -22,13 +22,15 @@ const searchPlayers = async (req, res) => {
     if (sport === 'soccer') players = await searchSoccerPlayers(q);
 
     const saved = await Promise.all(
-      players.map(p =>
-        Player.findOneAndUpdate(
-          { externalId: p.externalId, sport: p.sport },
-          p,
-          { upsert: true, new: true }
+      players
+        .filter(p => p.externalId != null && p.externalId !== 'null' && p.externalId !== 'undefined')
+        .map(p =>
+          Player.findOneAndUpdate(
+            { externalId: p.externalId, sport: p.sport },
+            p,
+            { upsert: true, new: true }
+          )
         )
-      )
     );
 
     res.json({ source: 'api', players: saved });
