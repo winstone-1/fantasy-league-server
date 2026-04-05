@@ -84,6 +84,7 @@ const createCustomPlayer = async (req, res) => {
 
     res.status(201).json(player);
   } catch (error) {
+    console.error('CUSTOM PLAYER ERROR:', error.message, error)
     res.status(500).json({ message: error.message });
   }
 };
