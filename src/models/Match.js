@@ -6,7 +6,8 @@ const matchSchema = new mongoose.Schema({
   awayTeam:   { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
   homeScore:  { type: Number, default: 0 },
   awayScore:  { type: Number, default: 0 },
-  status:     { type: String, enum: ['scheduled', 'live', 'completed'], default: 'scheduled' },
+  status:     { type: String, enum: ['scheduled', 'live', 'ht', 'ft', 'cancelled', 'completed'], default: 'scheduled' },
+  minute:     { type: Number, default: 0 },
   week:       { type: Number, required: true },
   startTime:  { type: Date, required: true }
 }, { timestamps: true });
