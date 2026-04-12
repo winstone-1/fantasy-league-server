@@ -5,12 +5,16 @@ const teamSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   league: { type: mongoose.Schema.Types.ObjectId, ref: 'League' },
   players: [{
-    position: String,       // slot id e.g. 'GK', 'CB1', 'NBA_PG'
+    position: String,
     player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player' },
-    x: { type: Number },    // percentage 0-100 from left (free drag position)
-    y: { type: Number },    // percentage 0-100 from top  (free drag position)
+    x: { type: Number },
+    y: { type: Number },
   }],
-  totalPoints: { type: Number, default: 0 }
+  totalPoints:  { type: Number, default: 0 },
+  wins:         { type: Number, default: 0 },  // ← add
+  losses:       { type: Number, default: 0 },  // ← add
+  draws:        { type: Number, default: 0 },  // ← add
+  weeklyPoints: { type: Number, default: 0 },  // ← add
 }, { timestamps: true });
 
 export default mongoose.model('Team', teamSchema);
